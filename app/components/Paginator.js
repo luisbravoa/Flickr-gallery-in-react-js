@@ -3,7 +3,7 @@ import React from 'react';
 export default
 class Pagination extends React.Component {
 
-    _onPageChange (event) {
+    _onPageChange(event) {
         event.preventDefault();
         this.setState({
             page: event.target.getAttribute('data-page')
@@ -14,7 +14,7 @@ class Pagination extends React.Component {
         }
     }
 
-    render () {
+    render() {
 
         var currentPage = parseInt(this.props.page);
         var totalPages = parseInt(this.props.totalPages);

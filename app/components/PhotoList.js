@@ -3,7 +3,7 @@ import Photo from './Photo';
 
 export default
 class PhotoList extends React.Component {
-    render(){
+    render() {
         return (
             <div className="flickr-photos">
                 {this.props.photos.map(function (photo, index) {
