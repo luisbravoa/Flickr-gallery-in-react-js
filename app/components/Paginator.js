@@ -27,7 +27,7 @@ class Pagination extends React.Component {
         var start = (currentPage - 2 < 1) ? 1 : currentPage - 2;
         var end = (start + 4 > totalPages) ? totalPages : start + 4;
 
-        for (var i = start; i <= end; i++) {
+        for (let i = start; i <= end; i++) {
             if (i == currentPage) {
                 pageNav.push({text: currentPage, number: currentPage, current: true});
 
@@ -44,12 +44,12 @@ class Pagination extends React.Component {
         return (
             <div className="paginationWrapper">
                 <ul className="pagination">
-                    {pageNav.map(function (page, index) {
+                    {pageNav.map((page, index) => {
                         return <li className={page.current? 'current':''} key={index}>
                             <a href='#' onClick={this._onPageChange.bind(this)}
                                data-page={page.number}>{page.text}</a>
                         </li>;
-                    }.bind(this))}
+                    })}
                 </ul>
             </div>
         );

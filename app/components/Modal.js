@@ -13,7 +13,7 @@ class Modal extends React.Component {
     }
 
     bindKeyDown() {
-        $(document).bind('keydown', function (e) {
+        $(document).bind('keydown', e => {
             var key = e.keyCode;
             if (key == 39 && this.getNextPhotoId() !== undefined) {
                 location.hash = 'photo/' + this.getNextPhotoId();
@@ -21,7 +21,7 @@ class Modal extends React.Component {
             if (key == 37 && this.getPreviousPhotoId() !== undefined) {
                 location.hash = 'photo/' + this.getPreviousPhotoId();
             }
-        }.bind(this));
+        });
     }
 
     onClose() {
@@ -64,7 +64,7 @@ class Modal extends React.Component {
         if (this.photo === undefined) {
             return <div></div>;
         }
-        var src = 'http://farm' + this.photo.farm + '.static.flickr.com/' + this.photo.server + '/' + this.photo.id + '_' + this.photo.secret + '_z.jpg';
+        var src = `http://farm${this.photo.farm}.static.flickr.com/${this.photo.server}/${this.photo.id}_${this.photo.secret}_z.jpg`;
 
         var photoIndex = this.props.photos.indexOf(this.photo);
 

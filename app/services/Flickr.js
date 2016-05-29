@@ -8,7 +8,7 @@ function Flickr() {
 }
 
 
-Flickr.prototype.search = function (search, page, success, error) {
+Flickr.prototype.search = function (search='', page=1, success, error) {
     var params = {
         api_key: this.api_key,
         per_page: this.perPage,

@@ -68,7 +68,7 @@ class App extends React.Component {
         this.setState({
             loading: true
         });
-        this.service.search(this.state.query, this.state.page, function (data) {
+        this.service.search(this.state.query, this.state.page, (data) => {
 
             if (this.state.query !== '') {
                 this.headerText = 'Results for "' + this.state.query + '"';
@@ -83,8 +83,7 @@ class App extends React.Component {
                 loading: false
             });
 
-
-        }.bind(this));
+        });
     }
 
     render() {
