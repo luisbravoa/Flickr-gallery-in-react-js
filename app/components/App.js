@@ -2,61 +2,44 @@ import React from 'react';
 import PhotoList from './PhotoList';
 import Pagination from './Paginator';
 import Modal from './Modal';
-import Flickr from '../services/Flickr';
-
+import actions from '../actions/index';
 
 export default
 class App extends React.Component {
     constructor(props) {
         super(props);
 
-        this.service = new Flickr();
         this.state = {
             query: '',
-            page: 1,
-            loading: true,
-            currentPhotoId: undefined
+            page: 1
         };
-
-        window.addEventListener("hashchange", this._onLocationChange.bind(this));
-    }
-
-    _onLocationChange() {
-        var hash = location.hash;
-
-        var regexp = /#?photo\/(.*)/g;
-        if (regexp.test(hash)) {
-            this.setState({
-                currentPhotoId: hash.split('/')[1]
-            });
-        } else {
-            this.setState({
-                currentPhotoId: undefined
-            });
-        }
     }
 
     componentDidMount() {
-        this._onSearch();
-        this._onLocationChange();
+        this._triggerShowPhotos();
     }
 
     _onQueryChange(event) {
-        this.setState({query: event.target.value});
+        this.setState({
+            query: event.target.value
+        });
     }
 
     _onPageChange(page) {
         this.setState({
             page: page
+        }, function () {
+            this._triggerShowPhotos();
         });
-        this.search();
+    }
+
+    _triggerShowPhotos (){
+        actions.fetchPhotos(this.state.query, this.state.page);
     }
 
     _onSearch() {
-        this.setState({
-            page: 1
-        });
-        this.search();
+        this.page = 1;
+        this._triggerShowPhotos();
     }
     _onKeyPress (e) {
         if (e.charCode == 13) {
@@ -64,46 +47,26 @@ class App extends React.Component {
         }
     }
 
-    search() {
-        this.setState({
-            loading: true
-        });
-        this.service.search(this.state.query, this.state.page, (data) => {
-
-            if (this.state.query !== '') {
-                this.headerText = 'Results for "' + this.state.query + '"';
-            } else {
-                this.headerText = 'Most recent photos';
-            }
-            this.pages = data.photos.pages;
-
-            this.photos = data.photos.photo;
-
-            this.setState({
-                loading: false
-            });
-
-        });
-    }
-
     render() {
+        const {loading, photos, currentPhotoId} = this.props;
+
         var content;
-        if (this.state.loading === true) {
+        if (loading === true) {
             content = (<div id="loaderWrapper"><img id="loader" src="images/loader.gif"/></div>);
         } else {
             content = (
                 <div>
-                    <Pagination page={this.state.page} totalPages={this.pages}
+                    <Pagination page={photos.page} totalPages={photos.pages}
                     onChange={this._onPageChange.bind(this)}/>
-                    <PhotoList photos={this.photos}/>
-                    <Pagination page={this.state.page} totalPages={this.pages}
+                    <PhotoList photos={photos.photo || []}/>
+                    <Pagination page={photos.page} totalPages={photos.pages}
                                 onChange={this._onPageChange.bind(this)}/>
                 </div>);
         }
-        var modal = '';
-        if (this.state.currentPhotoId !== undefined && this.photos !== undefined && this.photos.length > 0) {
+        var modal;
 
-            modal = <Modal photos={this.photos} currentPhotoId={this.state.currentPhotoId}/>;
+        if (currentPhotoId !== undefined && photos.photo !== undefined && photos.photo.length > 0) {
+            modal = <Modal photos={photos.photo} currentPhotoId={currentPhotoId}/>;
         }
 
         return (
@@ -134,7 +97,7 @@ class App extends React.Component {
                                 <div className="pages"></div>
                             </div>
                             <div className="col-md-2"><p className="pages-of-pages">Page {this.state.page}
-                                of {this.pages} </p></div>
+                                of {photos.pages} </p></div>
                         </div>
                         {content}
                     </div>
